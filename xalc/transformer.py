@@ -13,8 +13,9 @@ tests = [
     ('m5@1', '(0x3e)'),
     ('m2@0_5_8t9_29_31t31', '(0x3|0x20|0x300|0x20000000|0x80000000)'),
 
-    ('xdead $ m4t7', '0xdead >> 4 & ((0xf0) >> 4)'),
-    ('xbeef $ m2@11', '0xbeef >> 11 & ((0x1800) >> 11)'),
+    ('cafe $ m4t7', '(((0xcafe) & 0xf0) >> 4)'),
+    ('beef $ m2@11', '(((0xbeef) & 0x1800) >> 11)'),
+    ('dead $ m3@6_2_3', '(((0xdead) & 0x4) >> 2) | (((0xdead) & 0x8) >> 2) | (((0xdead) & 0x1c0) >> 4)'),
 
     ('n1010', '0b1010'),
     ('b01a', '0xb01a'),
@@ -63,11 +64,26 @@ class XalcInputTransformer(InputTransformer):
         poses = [self.bitpos(pos) for pos in match.group(1).split('_')]
         return '(%s)' % '|'.join(poses)
 
-    def replace_extract(self, match):
-        mask = self.replace_bit(match)
-        pos = bin(eval(mask))[2:][::-1].index('1')
+    def get_mask_shift(self, mask):
+        b = bin(eval(mask))[2:][::-1]
+        return (b.index('1'), b.rindex('1'))
 
-        return '>> {pos} & ({mask} >> {pos})'.format(pos=pos, mask=mask)
+    def replace_extract(self, match):
+        expr = match.group(1).rstrip()
+        masks = [self.bitpos(pos) for pos in match.group(2).split('_')]
+
+        maskshifts = []
+        lastend = 0
+        for m in sorted(masks, key=lambda m:self.get_mask_shift(m)[0]):
+            start, end = self.get_mask_shift(m)
+            shift = start - lastend
+
+            maskshifts.append((m, shift))
+            lastend = end - shift + 1
+
+        fmt = '((({expr}) & {mask}) >> {shift})'
+        return ' | '.join([fmt.format(expr=expr,
+            mask=mask, shift=shift) for mask, shift in maskshifts])
 
     def replace_size(self, match):
         sz = int(match.group(1))
@@ -90,7 +106,7 @@ class XalcInputTransformer(InputTransformer):
 
     def do_subs(self, line):
         reps = [
-            (r'\$ m([0-9t@_]+)\b', self.replace_extract),
+            (r'(.*)\$ m([0-9t@_]+)\b', self.replace_extract),
             (r'\bm([0-9t@_]+)\b', self.replace_bit),
 
             (r'\b(?=[0-9]*[a-fA-F]+[0-9]*)([0-9a-fA-F]+)\b', self.hexrep),
