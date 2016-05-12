@@ -5,17 +5,17 @@ import re
 from IPython.core.inputtransformer import InputTransformer
 
 tests = [
-    ('m0', '(0x1)'),
-    ('m15', '(0x8000)'),
-    ('m1_2_31', '(0x2|0x4|0x80000000)'),
-    ('m4t6', '(0x70)'),
-    ('m6t4', '(0x70)'),
-    ('m5@1', '(0x3e)'),
-    ('m2@0_5_8t9_29_31t31', '(0x3|0x20|0x300|0x20000000|0x80000000)'),
+    ('m0', '(1)'),
+    ('m15', '((1 << 15))'),
+    ('m1_2_31', '((1 << 1) | (1 << 2) | (1 << 31))'),
+    ('m4t6', '((0x7 << 4))'),
+    ('m6t4', '((0x7 << 4))'),
+    ('m5@1', '((0x1f << 1))'),
+    ('m2@0_5_8t9_29_31t31', '(0x3 | (1 << 5) | (0x3 << 8) | (1 << 29) | (1 << 31))'),
 
-    ('cafe $ m4t7', '(((0xcafe) & 0xf0) >> 4)'),
-    ('beef $ m2@11', '(((0xbeef) & 0x1800) >> 11)'),
-    ('dead $ m3@6_2_3', '(((0xdead) & 0x4) >> 2) | (((0xdead) & 0x8) >> 2) | (((0xdead) & 0x1c0) >> 4)'),
+    ('cafe $ m4t7', '(((0xcafe) & (0xf << 4)) >> 4)'),
+    ('beef $ m2@11', '(((0xbeef) & (0x3 << 11)) >> 11)'),
+    ('dead $ m3@6_2_3', '(((0xdead) & (1 << 2)) >> 2) | (((0xdead) & (1 << 3)) >> 2) | (((0xdead) & (0x7 << 6)) >> 4)'),
 
     ('n1010', '0b1010'),
     ('b01a', '0xb01a'),
@@ -57,12 +57,20 @@ class XalcInputTransformer(InputTransformer):
             end = start + width - 1
         else:
             start = end = int(pos)
-        mask = (((1 << (end - start + 1)) - 1) << start)
-        return '0x%x' % mask
+
+        val = ((1 << (end - start + 1)) - 1)
+        val = ('0x{:x}' if val > 1 else '{}').format(val)
+
+        if start > 0:
+            expr = '({} << {})'.format(val, start)
+        else:
+            expr = val
+
+        return expr
 
     def replace_bit(self, match):
         poses = [self.bitpos(pos) for pos in match.group(1).split('_')]
-        return '(%s)' % '|'.join(poses)
+        return '(%s)' % ' | '.join(poses)
 
     def get_mask_shift(self, mask):
         b = bin(eval(mask))[2:][::-1]
@@ -77,11 +85,11 @@ class XalcInputTransformer(InputTransformer):
         for m in sorted(masks, key=lambda m:self.get_mask_shift(m)[0]):
             start, end = self.get_mask_shift(m)
             shift = start - lastend
-
             maskshifts.append((m, shift))
             lastend = end - shift + 1
 
         fmt = '((({expr}) & {mask}) >> {shift})'
+
         return ' | '.join([fmt.format(expr=expr,
             mask=mask, shift=shift) for mask, shift in maskshifts])
 
