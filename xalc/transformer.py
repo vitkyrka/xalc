@@ -10,12 +10,12 @@ tests = [
     ('m1_2_31', '((1 << 1) | (1 << 2) | (1 << 31))'),
     ('m4t6', '((0x7 << 4))'),
     ('m6t4', '((0x7 << 4))'),
-    ('m5@1', '((0x1f << 1))'),
-    ('m2@0_5_8t9_29_31t31', '(0x3 | (1 << 5) | (0x3 << 8) | (1 << 29) | (1 << 31))'),
+    ('m5p1', '((0x1f << 1))'),
+    ('m2p0_5_8t9_29_31t31', '(0x3 | (1 << 5) | (0x3 << 8) | (1 << 29) | (1 << 31))'),
 
     ('cafe $ m4t7', '(((0xcafe) & (0xf << 4)) >> 4)'),
-    ('beef $ m2@11', '(((0xbeef) & (0x3 << 11)) >> 11)'),
-    ('dead $ m3@6_2_3', '(((0xdead) & (1 << 2)) >> 2) | (((0xdead) & (1 << 3)) >> 2) | (((0xdead) & (0x7 << 6)) >> 4)'),
+    ('beef $ m2p11', '(((0xbeef) & (0x3 << 11)) >> 11)'),
+    ('dead $ m3p6_2_3', '(((0xdead) & (1 << 2)) >> 2) | (((0xdead) & (1 << 3)) >> 2) | (((0xdead) & (0x7 << 6)) >> 4)'),
 
     ('n1010', '0b1010'),
     ('b01a', '0xb01a'),
@@ -50,8 +50,8 @@ class XalcInputTransformer(InputTransformer):
             end = int(end)
             if start > end:
                 start, end = end, start
-        elif '@' in pos:
-            width, start = pos.split('@')
+        elif 'p' in pos:
+            width, start = pos.split('p')
             start = int(start)
             width = int(width)
             end = start + width - 1
@@ -114,8 +114,8 @@ class XalcInputTransformer(InputTransformer):
 
     def do_subs(self, line):
         reps = [
-            (r'(.*)\$ m([0-9t@_]+)\b', self.replace_extract),
-            (r'\bm([0-9t@_]+)\b', self.replace_bit),
+            (r'(.*)\$ m([0-9tp_]+)\b', self.replace_extract),
+            (r'\bm([0-9tp_]+)\b', self.replace_bit),
 
             (r'\b(?=[0-9]*[a-fA-F]+[0-9]*)([0-9a-fA-F]+)\b', self.hexrep),
 
