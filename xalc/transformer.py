@@ -8,7 +8,7 @@ from IPython.core.inputtransformer import InputTransformer
 tests = [
     ('m0', '(1)'),
     ('m15', '((1 << 15))'),
-    ('m1_2_31', '((1 << 1) | (1 << 2) | (1 << 31))'),
+    ('m1_2_m31', '((1 << 1) | (1 << 2) | (1 << 31))'),
     ('m4t6', '((0x7 << 4))'),
     ('m6t4', '((0x7 << 4))'),
     ('m5p1', '((0x1f << 1))'),
@@ -16,7 +16,7 @@ tests = [
 
     ('cafe $ m4t7', '(((0xcafe) & (0xf << 4)) >> 4)'),
     ('beef $ m2p11', '(((0xbeef) & (0x3 << 11)) >> 11)'),
-    ('dead $ m3p6_2_3', '(((0xdead) & (1 << 2)) >> 2) | (((0xdead) & (1 << 3)) >> 2) | (((0xdead) & (0x7 << 6)) >> 4)'),
+    ('dead $ m3p6_m2_3', '(((0xdead) & (1 << 2)) >> 2) | (((0xdead) & (1 << 3)) >> 2) | (((0xdead) & (0x7 << 6)) >> 4)'),
 
     ('n1010', '0b1010'),
     ('b01a', '0xb01a'),
@@ -45,6 +45,8 @@ tests = [
 class XalcInputTransformer(InputTransformer):
 
     def bitpos(self, pos):
+        pos = pos.replace('m', '')
+
         if 't' in pos:
             start, end = pos.split('t')
             start = int(start)
@@ -115,8 +117,8 @@ class XalcInputTransformer(InputTransformer):
 
     def do_subs(self, line):
         reps = [
-            (r'(.*)\$ m([0-9tp_]+)\b', self.replace_extract),
-            (r'\bm([0-9tp_]+)\b', self.replace_bit),
+            (r'(.*)\$ m([0-9tpm_]+)\b', self.replace_extract),
+            (r'\bm([0-9tpm_]+)\b', self.replace_bit),
 
             (r'\b(?=[0-9]*[a-fA-F]+[0-9]*)([0-9a-fA-F]+)\b', self.hexrep),
 
