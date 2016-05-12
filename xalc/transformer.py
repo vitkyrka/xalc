@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import traceback
 
 from IPython.core.inputtransformer import InputTransformer
 
@@ -135,7 +136,11 @@ class XalcInputTransformer(InputTransformer):
         return line
 
     def push(self, line):
-        return self.do_subs(line)
+        try:
+            return self.do_subs(line)
+        except:
+            traceback.print_exc()
+            raise SyntaxError("Invalid syntax")
 
     def reset(self):
         pass
