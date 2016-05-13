@@ -12,7 +12,7 @@ setup(
     url='https://github.com/rabinv/xalc',
     author='Rabin Vincent',
     author_email='rabin@rab.in',
-    version='0.2.0',
+    version='0.3.0',
     install_requires=[
         'ipython>=4.2.0',
         'bitstring>=3.1.4',
