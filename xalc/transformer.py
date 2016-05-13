@@ -12,11 +12,14 @@ tests = [
     ('m4t6', '((0x7 << 4))'),
     ('m6t4', '((0x7 << 4))'),
     ('m5p1', '((0x1f << 1))'),
-    ('m2p0_5_8t9_29_31t31', '(0x3 | (1 << 5) | (0x3 << 8) | (1 << 29) | (1 << 31))'),
+    ('m2p0_5_8t9_29_31t31',
+     '(0x3 | (1 << 5) | (0x3 << 8) | (1 << 29) | (1 << 31))'),
 
     ('cafe $ m4t7', '(((0xcafe) & (0xf << 4)) >> 4)'),
     ('beef $ m2p11', '(((0xbeef) & (0x3 << 11)) >> 11)'),
-    ('dead $ m3p6_m2_3', '(((0xdead) & (1 << 2)) >> 2) | (((0xdead) & (1 << 3)) >> 2) | (((0xdead) & (0x7 << 6)) >> 4)'),
+    ('dead $ m3p6_m2_3',
+     '(((0xdead) & (1 << 2)) >> 2) | (((0xdead) & (1 << 3)) >> 2) | '
+     '(((0xdead) & (0x7 << 6)) >> 4)'),
 
     ('n1010', '0b1010'),
     ('b01a', '0xb01a'),
@@ -85,7 +88,7 @@ class XalcInputTransformer(InputTransformer):
 
         maskshifts = []
         lastend = 0
-        for m in sorted(masks, key=lambda m:self.get_mask_shift(m)[0]):
+        for m in sorted(masks, key=lambda m: self.get_mask_shift(m)[0]):
             start, end = self.get_mask_shift(m)
             shift = start - lastend
             maskshifts.append((m, shift))
@@ -93,8 +96,8 @@ class XalcInputTransformer(InputTransformer):
 
         fmt = '((({expr}) & {mask}) >> {shift})'
 
-        return ' | '.join([fmt.format(expr=expr,
-            mask=mask, shift=shift) for mask, shift in maskshifts])
+        return ' | '.join([fmt.format(expr=expr, mask=m, shift=s)
+                           for m, s in maskshifts])
 
     def replace_size(self, match):
         sz = int(match.group(1))
