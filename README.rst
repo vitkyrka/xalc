@@ -18,8 +18,8 @@ Features:
 - From IPython: Support for arbitrary Python expressions (minus the ones that conflict with the pre-processed syntax), command history, access to previous results with _* variables, etc.
 
 The following "screenshot" demonstrates some of the features of Xalc.  The real
-program displays the different bases in different colors and highlights changed
-bits and nibbles with underlines, if your console supports that::
+program displays the different bases in different colors, if your console
+supports that::
 
  $ xalc
  In [1]: deadbeef
