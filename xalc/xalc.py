@@ -6,7 +6,7 @@ import sys
 from IPython.terminal.embed import InteractiveShellEmbed
 from traitlets.config import Config
 
-from transformer import tests
+from .transformer import tests
 
 
 def main():
@@ -29,9 +29,9 @@ def main():
         ipshell.run_cell(' '.join(args.cmd), store_history=False)
         sys.exit()
 
-    print 'xalc examples/tests:'
+    print('xalc examples/tests:')
     for inp, out in tests:
-        print ' {:10s} => {:10s}'.format(inp, out)
+        print(' {:10s} => {:10s}'.format(inp, out))
 
     ipshell()
 

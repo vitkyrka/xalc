@@ -137,7 +137,7 @@ class XalcInputTransformer(InputTransformer):
         for regex, rep in reps:
             line = re.sub(regex, rep, line)
 
-        print line
+        print(line)
         return line
 
     def push(self, line):

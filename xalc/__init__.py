@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from transformer import XalcInputTransformer
-from formatter import XalcFormatter
+from .transformer import XalcInputTransformer
+from .formatter import XalcFormatter
 
 
 def load_ipython_extension(ip):
