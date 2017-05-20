@@ -81,7 +81,7 @@ class XalcFormatter(object):
         hexfmt += ' ' * (maxlen - hexlen) + '│'
 
         if wordsize:
-            binval = ' '.join(re.findall('.{4}','{:0{wordsize}b}'.format(
+            binval = ' '.join(re.findall('.{4}','{:{wordsize}b}'.format(
                 hexn, wordsize=wordsize)))
             bits = ['{t.underline}{b}{t.no_underline}'.format(b=b, t=self.t)
                     if b == '1' else b
