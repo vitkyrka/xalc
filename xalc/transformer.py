@@ -35,6 +35,7 @@ tests = [
     ('50k', '0x%x' % (50 * 1024)),
     ('128k', '0x%x' % (128 * 1024)),
     ('20g', '0x%x' % (20 * 1024 * 1024 * 1024)),
+    ('4t', '0x%x' % (4 * 1024 * 1024 * 1024 * 1024)),
 
     ('0123', '0123'),
     ('a', '0xa'),
@@ -109,6 +110,8 @@ class XalcInputTransformer(InputTransformer):
             sz *= 1024 * 1024
         elif unit == 'g':
             sz *= 1024 * 1024 * 1024
+        elif unit == 't':
+            sz *= 1024 * 1024 * 1024 * 1024
 
         return '0x%x' % sz
 
@@ -128,7 +131,7 @@ class XalcInputTransformer(InputTransformer):
             (r'\bn([01]+)\b', self.binrep),
             (r'\b([01]+)n\b', self.binrep),
 
-            (r'\b([0-9]+)([kKmMgG])\b', self.replace_size),
+            (r'\b([0-9]+)([kKmMgGtT])\b', self.replace_size),
 
             (r'\bx([0-9a-fA-F]+)\b', self.hexrep),
             (r'\b([0-9a-fA-F]+)x\b', self.hexrep),

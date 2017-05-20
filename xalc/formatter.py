@@ -20,14 +20,15 @@ class XalcFormatter(object):
     def __init__(self):
         self.cursed = Cursed()
         self.t = blessed.Terminal()
+        self.sizes = [(1024 * 1024 * 1024 * 1024, 'Ti'),
+                      (1024 * 1024 * 1024, 'Gi'),
+                      (1024 * 1024, 'Mi'),
+                      (1024, 'Ki'),
+                      (1, '')]
 
     def format_size(self, sz):
-        sizes = [(1024 * 1024 * 1024, 'Gi'),
-                 (1024 * 1024, 'Mi'),
-                 (1024, 'Ki'),
-                 (1, '')]
         parts = []
-        for size, name in sizes:
+        for size, name in self.sizes:
             if sz and sz >= size:
                 parts.append('{} {}'.format(sz / size, name))
                 sz -= (sz / size) * size
