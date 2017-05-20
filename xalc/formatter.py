@@ -20,11 +20,11 @@ class XalcFormatter(object):
     def __init__(self):
         self.cursed = Cursed()
         self.t = blessed.Terminal()
-        self.sizes = [(1024 * 1024 * 1024 * 1024, 'Ti'),
-                      (1024 * 1024 * 1024, 'Gi'),
-                      (1024 * 1024, 'Mi'),
-                      (1024, 'Ki'),
-                      (1, '')]
+
+        prefixes = ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei']
+        self.sizes = list(reversed([(1024 ** i, name)
+                                    for i, name
+                                    in enumerate(prefixes)]))
 
     def format_size(self, sz):
         parts = []
