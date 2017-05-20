@@ -11,7 +11,7 @@ Features:
 
 - Mixed calculations with hex, decimal, binary and binary prefix literals
 - Support for undecorated hex literals.  Ambiguous literals can be forced to hex by either prefixing or suffixing with 'x'.
-- Display in hex, decimal, 32-bit binary (with bit position ruler) and binary prefixes (sizes)
+- Display in hex, decimal, binary (with bit position ruler) and binary prefixes (sizes)
 - Simple bit mask construction
 - Bit field extraction operator
 - Highlighting of changed nibbles/bits
