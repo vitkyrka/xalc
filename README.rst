@@ -14,7 +14,6 @@ Features:
 - Display in hex, decimal, binary (with bit position ruler) and binary prefixes (sizes)
 - Simple bit mask construction
 - Bit field extraction operator
-- Highlighting of changed nibbles/bits
 - From IPython: Support for arbitrary Python expressions (minus the ones that conflict with the pre-processed syntax), command history, access to previous results with _* variables, etc.
 
 The following "screenshot" demonstrates some of the features of Xalc.  The real
