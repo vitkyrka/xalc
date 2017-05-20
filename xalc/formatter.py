@@ -30,8 +30,8 @@ class XalcFormatter(object):
         parts = []
         for size, name in self.sizes:
             if sz and sz >= size:
-                parts.append('{} {}'.format(sz / size, name))
-                sz -= (sz / size) * size
+                parts.append('{} {}'.format(sz // size, name))
+                sz -= (sz // size) * size
 
         return ' + '.join(parts)
 
