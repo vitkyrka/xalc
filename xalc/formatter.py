@@ -58,7 +58,11 @@ class XalcFormatter(object):
             hexn = int(bitstring.BitArray('int:32={}'.format(n)).hex, 16)
             hexval = '{n:08x}'.format(n=hexn)
 
-        fits32bits = hexn <= 0xffffffff
+        wordsize = 0
+        if hexn <= 0xffffffff:
+            wordsize = 32
+        elif hexn <= 0xffffffffffffffff:
+            wordsize = 64
 
         decstr = decfmt.format(t=self.cursed, n=n)
         hexstr = hexfmt.format(t=self.cursed, hexval=hexval)
@@ -68,20 +72,21 @@ class XalcFormatter(object):
         maxlen = max(declen, hexlen) + 4
 
         decfmt += ' ' * (maxlen - declen) + '│'
-        if fits32bits:
+        if wordsize:
             markers = ''.join(['{:2d}─╮ '.format(i)
-                               for i in range(28, -1, -4)])
+                               for i in range(wordsize - 4, -1, -4)])
             decfmt += '  {t.white}{markers}{t.normal}'.format(
                 t=self.t, markers=markers)
 
         hexfmt += ' ' * (maxlen - hexlen) + '│'
 
-        if fits32bits:
-            binval = ' '.join(re.findall('.{4}', '{:032b}'.format(hexn)))
+        if wordsize:
+            binval = ' '.join(re.findall('.{4}','{:0{wordsize}b}'.format(
+                hexn, wordsize=wordsize)))
             hexfmt += '  {t.magenta}{binval}{t.normal}'.format(
                 t=self.t, binval=binval)
         else:
-            hexfmt += '  {t.magenta}> 32 bits{t.normal}'.format(t=self.t)
+            hexfmt += '  {t.magenta}> 64 bits{t.normal}'.format(t=self.t)
 
         p.text(decfmt.format(t=self.t, n=n) + '\n')
         p.text(hexfmt.format(t=self.t, hexval=hexval))
