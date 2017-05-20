@@ -83,6 +83,10 @@ class XalcFormatter(object):
         if wordsize:
             binval = ' '.join(re.findall('.{4}','{:0{wordsize}b}'.format(
                 hexn, wordsize=wordsize)))
+            bits = ['{t.underline}{b}{t.no_underline}'.format(b=b, t=self.t)
+                    if b == '1' else b
+                    for b in binval]
+            binval = ''.join(bits)
             hexfmt += '  {t.magenta}{binval}{t.normal}'.format(
                 t=self.t, binval=binval)
         else:
