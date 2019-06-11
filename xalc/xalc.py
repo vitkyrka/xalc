@@ -19,7 +19,6 @@ def main():
     c.InteractiveShell.confirm_exit = False
 
     if args.cmd:
-        c.PromptManager.out_template = ''
         c.HistoryAccessor.enabled = False
 
     ipshell = InteractiveShellEmbed(config=c, banner1='')

@@ -14,7 +14,7 @@ setup(
     author_email='rabin@rab.in',
     version='0.5.0',
     install_requires=[
-        'ipython>=4.2.0',
+        'ipython>=5.0.0',
         'bitstring>=3.1.4',
         'blessed>=1.14.1',
     ],
