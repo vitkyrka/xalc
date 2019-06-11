@@ -48,6 +48,10 @@ tests = [
 
 class XalcInputTransformer(InputTransformer):
 
+    def __init__(self):
+        InputTransformer.__init__(self)
+        self.last_lines = []
+
     def bitpos(self, pos):
         pos = pos.replace('m', '')
 
@@ -140,15 +144,30 @@ class XalcInputTransformer(InputTransformer):
         for regex, rep in reps:
             line = re.sub(regex, rep, line)
 
-        print(line)
         return line
 
-    def push(self, line):
+    def _transform(self, line):
         try:
-            return self.do_subs(line)
+            out = self.do_subs(line)
         except:
             traceback.print_exc()
             raise SyntaxError("Invalid syntax")
+
+        return out
+
+    def push(self, line):
+        out = self._transform(line)
+        print(out)
+        return out
+
+    def transform(self, lines):
+        out = [self._transform(line) for line in lines]
+
+        if lines != self.last_lines:
+            print('\n'.join([line.rstrip('\n') for line in lines]))
+            self.last_lines = lines
+
+        return out
 
     def reset(self):
         pass
