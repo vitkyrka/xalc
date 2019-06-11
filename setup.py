@@ -10,9 +10,9 @@ setup(
     long_description=readme(),
     license='MIT',
     url='https://github.com/rabinv/xalc',
-    author='Rabin Vincent',
-    author_email='rabin@rab.in',
-    version='0.5.0',
+    author='Vincent Whitchurch',
+    author_email='vincent@whitchurch.se',
+    version='0.6.0',
     install_requires=[
         'ipython>=5.0.0',
         'bitstring>=3.1.4',
