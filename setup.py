@@ -12,9 +12,10 @@ setup(
     url='https://github.com/rabinv/xalc',
     author='Vincent Whitchurch',
     author_email='vincent@whitchurch.se',
-    version='0.6.0',
+    version='0.6.1',
     install_requires=[
         'ipython>=5.0.0',
+        'ipython<9.0.0',
         'bitstring>=3.1.4',
         'blessed>=1.14.1',
     ],
