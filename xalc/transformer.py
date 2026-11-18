@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import traceback
-
-from IPython.core.inputtransformer import InputTransformer
 
 tests = [
     ('m0', '(1)'),
@@ -46,11 +43,7 @@ tests = [
 ]
 
 
-class XalcInputTransformer(InputTransformer):
-
-    def __init__(self):
-        InputTransformer.__init__(self)
-        self.last_lines = []
+class XalcInputTransformer(object):
 
     def bitpos(self, pos):
         pos = pos.replace('m', '')
@@ -146,28 +139,16 @@ class XalcInputTransformer(InputTransformer):
 
         return line
 
-    def _transform(self, line):
+    def __call__(self, lines):
         try:
-            out = self.do_subs(line)
-        except:
-            traceback.print_exc()
-            raise SyntaxError("Invalid syntax")
+            return [self.do_subs(line) for line in lines]
+        except Exception as e:
+            raise SyntaxError("Invalid syntax") from e
 
-        return out
 
-    def push(self, line):
-        out = self._transform(line)
-        print(out)
-        return out
+def echo(lines):
+    print(''.join(lines).rstrip())
+    return lines
 
-    def transform(self, lines):
-        out = [self._transform(line) for line in lines]
 
-        if lines != self.last_lines:
-            print('\n'.join([line.rstrip('\n') for line in lines]))
-            self.last_lines = lines
-
-        return out
-
-    def reset(self):
-        pass
+echo.has_side_effects = True

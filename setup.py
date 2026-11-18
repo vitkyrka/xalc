@@ -14,7 +14,7 @@ setup(
     author_email='vincent@whitchurch.se',
     version='0.6.0',
     install_requires=[
-        'ipython>=5.0.0',
+        'ipython>=7.17.0',
         'bitstring>=3.1.4',
         'blessed>=1.14.1',
     ],
